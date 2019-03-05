@@ -1,28 +1,43 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { ThemeProvider } from 'styled-components';
+import { UserProvider } from './userCtxt';
+import Navbar from './navbar';
+import Sidebar from './sidebar';
+import Main from './form';
+import GlobalStyle, { theme } from './globalCSS';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+const App = (props) => {
+  const [sidebar, toggleSidebar] = useState(false);
+  const [username, updateUserName] = useState('Giselle')
+  const sidebarToggleClass = sidebar === true ? 'display' : 'hide';
+  const contextValue = {
+    username: username,
+    updateUserNameState: updateUserNameState,
+  };
+
+  function updateUserNameState(el) {
+    updateUserName(el);
   }
-}
+
+  function changeStateOfSidebar() {
+    toggleSidebar(!sidebar);
+  }
+
+  return (
+    <ThemeProvider theme={theme}>
+      <UserProvider value={contextValue}>
+        <div className="grid-container">
+          <GlobalStyle />
+          <Navbar
+            onSidebarToggle={changeStateOfSidebar}
+            sidebar={sidebar} />
+          <Sidebar className={sidebarToggleClass}/>
+          <section>
+            <Main/>
+          </section>
+        </div>
+      </UserProvider>
+    </ThemeProvider>
+)}
 
 export default App;
